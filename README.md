@@ -6,7 +6,7 @@ Copy petalinux-v2019.1-final-installer.run file to this folder. Then run
 
 On the host extract the sstate-cache to /opt with:
 
-'tar -zxf sstate-rel-v2019.1.tar.gz --directory /opt/'
+`tar -zxf sstate-rel-v2019.1.tar.gz --directory /opt/`
 
 After installation, launch petalinux on a linux host with:
 
