@@ -27,6 +27,7 @@ RUN sed -i.bak s/archive.ubuntu.com/${UBUNTU_MIRROR}/g /etc/apt/sources.list && 
   wget \
   socat \
   gcc-multilib \
+  libidn11 \
   libsdl1.2-dev \
   libglib2.0-dev \
   lib32z1-dev \
