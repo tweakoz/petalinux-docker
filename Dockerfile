@@ -62,3 +62,4 @@ WORKDIR /home/vivado/project
 
 #add vivado tools to path
 RUN echo "source /opt/Xilinx/petalinux/settings.sh" >> /home/vivado/.bashrc
+RUN echo "source /opt/Xilinx/Vivado/2020.1/settings64.sh" >> /home/vivado/.bashrc
