@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 
-MAINTAINER erluk <erluk@users.noreply.github.com>
+MAINTAINER tweakoz <tweakoz@users.noreply.github.com>
 
-# build with docker build --build-arg PETA_VERSION=2019.1 --build-arg PETA_RUN_FILE=petalinux-v2019.1-final-installer.run -t petalinux:2019.1 .
+# build with docker build --build-arg PETA_VERSION=2020.1 --build-arg PETA_RUN_FILE=petalinux-v2020.1-final-installer.run -t petalinux:2020.1 .
 
 ARG UBUNTU_MIRROR=archive.ubuntu.com
 
@@ -11,6 +11,7 @@ RUN sed -i.bak s/archive.ubuntu.com/${UBUNTU_MIRROR}/g /etc/apt/sources.list && 
   dpkg --add-architecture i386 && apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
   build-essential \
   sudo \
+  vim \
   tofrodos \
   iproute2 \
   gawk \
@@ -78,8 +79,8 @@ RUN chmod a+rx /${PETA_RUN_FILE} && \
   mkdir -p /opt/Xilinx && \
   chmod 777 /tmp /opt/Xilinx && \
   cd /tmp && \
-  sudo -u vivado -i /accept-eula.sh /${PETA_RUN_FILE} /opt/Xilinx/petalinux && \
-  rm -f /${PETA_RUN_FILE} /accept-eula.sh 
+  sudo -u vivado -i /accept-eula.sh /${PETA_RUN_FILE} --dir=/opt/Xilinx/petalinux && \
+  rm -f /${PETA_RUN_FILE} /accept-eula.sh
 
 # make /bin/sh symlink to bash instead of dash:
 RUN echo "dash dash/sh boolean false" | debconf-set-selections
@@ -93,4 +94,3 @@ WORKDIR /home/vivado/project
 
 #add vivado tools to path
 RUN echo "source /opt/Xilinx/petalinux/settings.sh" >> /home/vivado/.bashrc
-
