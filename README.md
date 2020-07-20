@@ -1,8 +1,10 @@
 # petalinux-docker
 
-1. generate xilinx auth token (see genauthtoken.py)
-2. Copy petalinux-2020.1-final-installer.run file to this folder. 2. build docker image: `./build.py`
-3. launch bash in docker image: `./launch.py`
+1. Copy petalinux-2020.1-final-installer.run to this folder.
+2. Copy Xilinx_Unified_2020.1_0602_1208_Lin64.bin to this folder.
+3. generate xilinx auth token (see genauthtoken.py)
+4. build docker image: `./build.py`
+5. launch bash in docker image: `./launch.py`
 
 * TODO:
   query xilinx password and login from user before docker build.
