@@ -11,48 +11,37 @@ ARG VIVADO_RUN_FILE
 ARG XILAUTHKEY
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV UBUNTU_MIRROR=UBUNTU_MIRROR
+ENV PETA_VERSION=PETA_VERSION
+ENV PETA_RUN_FILE=PETA_RUN_FILE
+ENV VIVADO_RUN_FILE=VIVADO_RUN_FILE
+ENV XILAUTHKEY=XILAUTHKEY
 
-#install dependences:
-RUN sed -i.bak s/archive.ubuntu.com/${UBUNTU_MIRROR}/g /etc/apt/sources.list
-RUN dpkg --add-architecture i386
-RUN apt-get update
-RUN apt-get install -y -q build-essential sudo vim tofrodos iproute2 gawk net-tools expect libncurses5-dev tftpd update-inetd libssl-dev flex bison
-RUN apt-get install -y -q libselinux1 gnupg wget socat gcc-multilib libidn11 libsdl1.2-dev libglib2.0-dev lib32z1-dev zlib1g:i386
-RUN apt-get install -y -q libgtk2.0-0 screen pax diffstat xvfb xterm texinfo gzip unzip cpio chrpath autoconf lsb-release
-RUN apt-get install -y -q libtool libtool-bin locales kmod git rsync bc u-boot-tools dos2unix python3-pip python-pip
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN locale-gen en_US.UTF-8 && update-locale
-
-#make a Vivado user
-RUN adduser --disabled-password --gecos '' vivado
-RUN usermod -aG sudo vivado
-RUN echo "vivado ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-COPY accept-eula.sh ${PETA_RUN_FILE} ${VIVADO_RUN_FILE} ${XILAUTHKEY} vivado_install_config.txt /
-# run the petalinux install
-RUN chmod a+rx /${PETA_RUN_FILE}
-RUN chmod a+rx /accept-eula.sh
-RUN chmod a+r /vivado_install_config.txt
-RUN dos2unix /accept-eula.sh
-RUN dos2unix /vivado_install_config.txt
+RUN mkdir /root/.Xilinx
 RUN mkdir -p /opt/Xilinx
 RUN chmod 777 /tmp /opt/Xilinx
-RUN cd /tmp
-RUN sudo -u vivado -i /accept-eula.sh /${PETA_RUN_FILE} --dir=/opt/Xilinx/petalinux
-RUN rm -f /${PETA_RUN_FILE} /accept-eula.sh
 
-# run the vivado install
-RUN mkdir /root/.Xilinx
+COPY stage1.sh /
+COPY accept-eula.sh ${PETA_RUN_FILE} ${VIVADO_RUN_FILE} ${XILAUTHKEY} vivado_install_config.txt /
 COPY ${XILAUTHKEY} /root/.Xilinx/wi_authentication_key
-RUN /${VIVADO_RUN_FILE} --target /tmp/XUL --noexec
-RUN /tmp/XUL/xsetup --batch Install --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --location /opt/Xilinx/ --config /vivado_install_config.txt
-RUN rm -f /${VIVADO_RUN_FILE} /vivado_install_config.txt
 
-# make /bin/sh symlink to bash instead of dash:
-RUN echo "dash dash/sh boolean false" | debconf-set-selections
-RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+###################################
+# invoke stage1
+###################################
+#  we call a script because:
+#  1. we want to reduce image size
+#  2. looking at a bunch of &&'ed commands
+#      reduces the code's signal to noise ratio
+#     I would dare say docker's Dockerfile language
+#     must be lacking expressiveness since reducing
+#     image size requires mashing a bunch of commands
+#     together with && thereby reducing readability.
+#  3. todo: balance build time with image size.. argh..
+###################################
+
+RUN /stage1.sh
+
+###################################
 
 USER vivado
 ENV HOME /home/vivado
