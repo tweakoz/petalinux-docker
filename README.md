@@ -1,4 +1,6 @@
-# petalinux-docker
+# petalinux-vivado-docker
+
+Petalinux+Vivado (2020.1) Docker container with X11 support
 
 1. Copy petalinux-2020.1-final-installer.run to this folder.
 2. Copy Xilinx_Unified_2020.1_0602_1208_Lin64.bin to this folder.
