@@ -11,19 +11,33 @@ ARG VIVADO_RUN_FILE
 ARG XILAUTHKEY
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV UBUNTU_MIRROR=UBUNTU_MIRROR
-ENV PETA_VERSION=PETA_VERSION
-ENV PETA_RUN_FILE=PETA_RUN_FILE
-ENV VIVADO_RUN_FILE=VIVADO_RUN_FILE
-ENV XILAUTHKEY=XILAUTHKEY
+ENV UBUNTU_MIRROR=${UBUNTU_MIRROR}
+ENV PETA_VERSION=${PETA_VERSION}
+ENV PETA_RUN_FILE=${PETA_RUN_FILE}
+ENV VIVADO_RUN_FILE=${VIVADO_RUN_FILE}
+ENV XILAUTHKEY=${XILAUTHKEY}
 
 RUN mkdir /root/.Xilinx
 RUN mkdir -p /opt/Xilinx
-RUN chmod 777 /tmp /opt/Xilinx
 
 COPY stage1.sh /
-COPY accept-eula.sh ${PETA_RUN_FILE} ${VIVADO_RUN_FILE} ${XILAUTHKEY} vivado_install_config.txt /
+COPY accept-eula.sh /
+###################################
+# todo: investigate
+#  other method of getting
+#  petalinux and vivado installers
+#  onto the container
+#  to reduce final image download
+#  footprint by around 1.5GiB.
+#  eg scp, direct download (from container), etc...
+###################################
+COPY ${PETA_RUN_FILE} /
+COPY ${VIVADO_RUN_FILE} /
+COPY ${XILAUTHKEY} /
+COPY vivado_install_config.txt /
 COPY ${XILAUTHKEY} /root/.Xilinx/wi_authentication_key
+
+RUN chmod 777 /tmp /opt/Xilinx /stage1.sh
 
 ###################################
 # invoke stage1

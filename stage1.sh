@@ -18,21 +18,27 @@ locale-gen en_US.UTF-8 && update-locale
 adduser --disabled-password --gecos '' vivado
 usermod -aG sudo vivado
 echo "vivado ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
 # run the petalinux install
-chmod a+rx /${PETA_RUN_FILE}
+chmod a+rx /$PETA_RUN_FILE
 chmod a+rx /accept-eula.sh
 chmod a+r /vivado_install_config.txt
 dos2unix /accept-eula.sh
 dos2unix /vivado_install_config.txt
 cd /tmp
-sudo -u vivado -i /accept-eula.sh /${PETA_RUN_FILE} --dir=/opt/Xilinx/petalinux
-rm -f /${PETA_RUN_FILE} /accept-eula.sh
+sudo -u vivado -i /accept-eula.sh /$PETA_RUN_FILE --dir=/opt/Xilinx/petalinux
 
 # run the vivado install
-/${VIVADO_RUN_FILE} --target /tmp/XUL --noexec
+/$VIVADO_RUN_FILE --target /tmp/XUL --noexec
 /tmp/XUL/xsetup --batch Install --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --location /opt/Xilinx/ --config /vivado_install_config.txt
-rm -f /${VIVADO_RUN_FILE} /vivado_install_config.txt
+
+# cleanup
+rm -f /$VIVADO_RUN_FILE
+rm -f /vivado_install_config.txt
+rm -rf /tmp/XUL
+rm -f /$PETA_RUN_FILE
+rm -f /accept-eula.sh
 
 # make /bin/sh symlink to bash instead of dash:
 echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+dpkg-reconfigure dash
