@@ -29,8 +29,13 @@ cd /tmp
 sudo -u vivado -i /accept-eula.sh /$PETA_RUN_FILE --dir=/opt/Xilinx/petalinux
 
 # run the vivado install
+cd /tmp
 /$VIVADO_RUN_FILE --target /tmp/XUL --noexec
 /tmp/XUL/xsetup --batch Install --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --location /opt/Xilinx/ --config /vivado_install_config.txt
+
+cd /tmp
+git clone https://github.com/Avnet/bdf
+cp -r /tmp/bdf/* /opt/Xilinx/Vivado/2020.1/data/boards/board_files/
 
 # cleanup
 rm -f /$VIVADO_RUN_FILE

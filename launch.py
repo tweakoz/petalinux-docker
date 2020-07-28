@@ -6,8 +6,8 @@ DISPLAY=os.environ["DISPLAY"]
 
 osname = platform.system()
 
-if osname=="Darwin": 
- os.system("xhost + 127.0.0.1") 
+if osname=="Darwin":
+ os.system("xhost + 127.0.0.1")
  DISPLAY="host.docker.internal:0"
 
 
