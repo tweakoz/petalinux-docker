@@ -33,9 +33,15 @@ cd /tmp
 /$VIVADO_RUN_FILE --target /tmp/XUL --noexec
 /tmp/XUL/xsetup --batch Install --agree XilinxEULA,3rdPartyEULA,WebTalkTerms --location /opt/Xilinx/ --config /vivado_install_config.txt
 
+# Avnet board files
 cd /tmp
 git clone https://github.com/Avnet/bdf
 cp -r /tmp/bdf/* /opt/Xilinx/Vivado/2020.1/data/boards/board_files/
+
+#Litex
+wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
+chmod +x litex_setup.py
+sudo -u vivado HOME=/home/vivado ./litex_setup.py init install --user
 
 # cleanup
 rm -f /$VIVADO_RUN_FILE

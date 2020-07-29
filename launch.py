@@ -15,5 +15,5 @@ os.system('docker run -ti --rm -e DISPLAY=%s '
           '--net=host --ipc=host -v /tmp/.X11-unix:/tmp/.X11-unix '
           '-v $HOME/.Xauthority:/home/vivado/.Xauthority '
           '-v $HOME/Xilinx:/home/vivado/project '
-          'petalinux:2020.1 '
+          'petalinux:2019.2 '
           '/bin/bash' % DISPLAY )
