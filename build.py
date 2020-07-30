@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+###################################
+# separate docker build into separate stages for amortized build time
+#  while debugging later stages
+#  (stages 1, 2 and 3 can take quite a while)
+###################################
 
 import os, sys, pathlib, argparse
 from ork import deco, path, command
