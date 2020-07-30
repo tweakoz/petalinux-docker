@@ -2,26 +2,24 @@ FROM ubuntu:18.04
 
 MAINTAINER tweakoz <tweakoz@users.noreply.github.com>
 
-# build with docker build --build-arg PETA_VERSION=2020.1 --build-arg PETA_RUN_FILE=petalinux-v2020.1-final-installer.run -t petalinux:2020.1 .
-
 ARG UBUNTU_MIRROR=archive.ubuntu.com
-ARG PETA_VERSION
-ARG PETA_RUN_FILE
-ARG VIVADO_RUN_FILE
-ARG XILAUTHKEY
+#ARG PETA_VERSION
+#ARG PETA_RUN_FILE
+#ARG VIVADO_RUN_FILE
+#ARG XILAUTHKEY
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV UBUNTU_MIRROR=${UBUNTU_MIRROR}
-ENV PETA_VERSION=${PETA_VERSION}
-ENV PETA_RUN_FILE=${PETA_RUN_FILE}
-ENV VIVADO_RUN_FILE=${VIVADO_RUN_FILE}
-ENV XILAUTHKEY=${XILAUTHKEY}
+#ENV PETA_VERSION=${PETA_VERSION}
+#ENV PETA_RUN_FILE=${PETA_RUN_FILE}
+#ENV VIVADO_RUN_FILE=${VIVADO_RUN_FILE}
+#ENV XILAUTHKEY=${XILAUTHKEY}
 
 RUN mkdir /root/.Xilinx
 RUN mkdir -p /opt/Xilinx
 
 COPY stage1.sh /
-COPY accept-eula.sh /
+#COPY accept-eula.sh /
 ###################################
 # todo: investigate
 #  other method of getting
@@ -31,11 +29,11 @@ COPY accept-eula.sh /
 #  footprint by around 1.5GiB.
 #  eg scp, direct download (from container), etc...
 ###################################
-COPY ${PETA_RUN_FILE} /
-COPY ${VIVADO_RUN_FILE} /
-COPY ${XILAUTHKEY} /
-COPY vivado_install_config.txt /
-COPY ${XILAUTHKEY} /root/.Xilinx/wi_authentication_key
+#COPY ${PETA_RUN_FILE} /
+#COPY ${VIVADO_RUN_FILE} /
+#COPY ${XILAUTHKEY} /
+#COPY vitis_install_config.txt /
+#COPY ${XILAUTHKEY} /root/.Xilinx/wi_authentication_key
 
 RUN chmod 777 /tmp /opt/Xilinx /stage1.sh
 
@@ -54,19 +52,21 @@ RUN chmod 777 /tmp /opt/Xilinx /stage1.sh
 ###################################
 
 RUN /stage1.sh
+RUN rm /stage1.sh
 
 ###################################
 
-USER vivado
-ENV HOME /home/vivado
+USER eda
+ENV HOME /home/eda
 ENV LANG en_US.UTF-8
 ENV PATH="$PATH:~/.local/bin"
-RUN mkdir /home/vivado/project
-WORKDIR /home/vivado/project
+RUN mkdir /home/eda/project
+WORKDIR /home/eda/project
 
 #add vivado tools to path
-RUN echo "source /opt/Xilinx/petalinux/settings.sh" >> /home/vivado/.bashrc
-RUN echo "source /opt/Xilinx/Vivado/2020.1/settings64.sh" >> /home/vivado/.bashrc
+RUN echo "source /opt/Xilinx/petalinux-2020.1/settings.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/Xilinx/Vivado/2020.1/settings64.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/Xilinx/Vitis/2020.1/settings64.sh" >> /home/eda/.bashrc
 
 # enable bashrc in non-interactive bash commands
-RUN sed -i.bak '6,9d' /home/vivado/.bashrc
+RUN sed -i.bak '6,9d' /home/eda/.bashrc
