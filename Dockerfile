@@ -16,7 +16,7 @@ ENV UBUNTU_MIRROR=${UBUNTU_MIRROR}
 #ENV XILAUTHKEY=${XILAUTHKEY}
 
 RUN mkdir /root/.Xilinx
-RUN mkdir -p /opt/Xilinx
+RUN mkdir -p /opt/xilinx
 
 COPY stage1.sh /
 #COPY accept-eula.sh /
@@ -35,7 +35,7 @@ COPY stage1.sh /
 #COPY vitis_install_config.txt /
 #COPY ${XILAUTHKEY} /root/.Xilinx/wi_authentication_key
 
-RUN chmod 777 /tmp /opt/Xilinx /stage1.sh
+RUN chmod 777 /tmp /opt/xilinx /stage1.sh
 
 ###################################
 # invoke stage1
@@ -64,9 +64,10 @@ RUN mkdir /home/eda/project
 WORKDIR /home/eda/project
 
 #add vivado tools to path
-RUN echo "source /opt/Xilinx/petalinux-2020.1/settings.sh" >> /home/eda/.bashrc
-RUN echo "source /opt/Xilinx/Vivado/2020.1/settings64.sh" >> /home/eda/.bashrc
-RUN echo "source /opt/Xilinx/Vitis/2020.1/settings64.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/xilinx/petalinux-2020.1/settings.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/xilinx/Vivado/2020.1/settings64.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/xilinx/Vitis/2020.1/settings64.sh" >> /home/eda/.bashrc
+RUN echo "source /opt/xilinx/xrt/setup.sh" >> /home/eda/.bashrc
 
 # enable bashrc in non-interactive bash commands
 RUN sed -i.bak '6,9d' /home/eda/.bashrc
